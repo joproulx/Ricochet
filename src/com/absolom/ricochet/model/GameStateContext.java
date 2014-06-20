@@ -13,8 +13,6 @@ import com.absolom.utility.messaging.MessageTransceiver;
 public class GameStateContext {
 	protected State m_currentState;
 
-	protected PlayerId m_currentPlayerId;
-
 	protected ArrayList<TargetId> m_remainingTargets;
 
 	protected TargetId m_currentTargetId;
@@ -54,10 +52,6 @@ public class GameStateContext {
 		return m_config;
 	}
 
-	public void setCurrentPlayerId(PlayerId playerId) {
-		m_currentPlayerId = playerId;
-	}
-
 	public PlayerSolutionManager getSolutionManager() {
 		return m_playerSolutionManager;
 	}
@@ -92,12 +86,9 @@ public class GameStateContext {
 		return m_currentState;
 	}
 
-	public PlayerId getCurrentPlayerId() {
-		return m_currentPlayerId;
-	}
-
 	public ScheduledFuture<?> startTimer(long milliseconds, final Runnable callback, final State stateFrom) {
 		return m_workScheduler.schedule(new LogRunnable(new Runnable() {
+			@Override
 			public void run() {
 				if (stateFrom != m_currentState) {
 					return;
@@ -112,6 +103,7 @@ public class GameStateContext {
 		final GameStateContext thisObj = this;
 
 		m_workerThread.execute(new LogRunnable(new Runnable() {
+			@Override
 			public void run() {
 				State previousState = null;
 				if (m_currentState != null) {

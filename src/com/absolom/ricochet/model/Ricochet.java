@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.absolom.ricochet.model.common.GameColor;
 import com.absolom.utility.data.IDocumentEntry;
 
-public class Ricochet extends GameBoardItem {
+public class Ricochet extends GameBoardEntity<RicochetId> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,12 +13,8 @@ public class Ricochet extends GameBoardItem {
 		super(data);
 	}
 
-	public RicochetId getRicochetId() {
-		return (RicochetId) getEntityId();
-	}
-
 	@Override
-	protected EntityId toEntityId(UUID id) {
+	protected RicochetId toEntityId(UUID id) {
 		return new RicochetId(id);
 	}
 

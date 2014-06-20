@@ -11,6 +11,7 @@ public abstract class PlayerCommand extends Message implements IPlayerMessage {
 		m_playerId = playerId;
 	}
 
+	@Override
 	public PlayerId getPlayerId() {
 		return m_playerId;
 	}

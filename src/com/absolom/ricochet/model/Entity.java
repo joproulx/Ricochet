@@ -5,13 +5,13 @@ import java.util.UUID;
 import com.absolom.utility.data.IDocumentEntry;
 import com.absolom.utility.serialization.ByteArraySerializable;
 
-public abstract class Entity extends ByteArraySerializable {
+public abstract class Entity<T extends EntityId> extends ByteArraySerializable {
 
 	private static final long serialVersionUID = 1L;
 	private final IDocumentEntry m_data;
-	protected abstract EntityId toEntityId(UUID id);
+	protected abstract T toEntityId(UUID id);
 
-	public EntityId getEntityId() {
+	public T getEntityId() {
 		return toEntityId(UUID.fromString(getData().getId()));
 	}
 

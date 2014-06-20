@@ -13,7 +13,6 @@ import com.absolom.utility.messaging.MessageResult;
 public class WaitingForNewPlayerState extends State {
 	public WaitingForNewPlayerState() {
 		super(StateType.WaitingForNewPlayer);
-
 	}
 
 	public @Override
@@ -36,10 +35,12 @@ public class WaitingForNewPlayerState extends State {
 			Player player = getEntityManager().createEntity(command.getPlayerId());
 			player.setPlayerName(command.getPlayerName());
 			player.setIsLocal(command.isLocal());
+			
+			getEntityManager().applyChanges();
+			
+			//AddPlayerResult result = addPlayer(player) ? AddPlayerResult.Succeeded : AddPlayerResult.AlreadyExist;
 
-			AddPlayerResult result = addPlayer(player) ? AddPlayerResult.Succeeded : AddPlayerResult.AlreadyExist;
-
-			return new RegisterPlayerCommand.Result(result);
+			return new RegisterPlayerCommand.Result(AddPlayerResult.Succeeded);
 		}
 	};
 

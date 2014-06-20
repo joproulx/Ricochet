@@ -1,4 +1,4 @@
-package com.absolom.ricochet.ui;
+package com.absolom.ricochet.ui.controls;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,6 +31,7 @@ public class RicochetControl extends EntityUserControl {
 		return m_ricochetColor;
 	}
 
+	@Override
 	public void draw(Canvas canvas, long elapsedMilliseconds) {
 		if (m_type == RicochetType.Backslash) {
 			canvas.drawLine(getBoundingBox().getLeft(), getBoundingBox().getTop(), getBoundingBox().getRight(), getBoundingBox().getBottom(), m_paint);

@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 
 
+
 import com.absolom.ricochet.model.*;
 import com.absolom.ricochet.model.common.GameColor;
 import com.absolom.utility.common.Direction;
@@ -34,7 +35,20 @@ public class GameManager {
 	// @SuppressWarnings("unused")
 	// private IViewAgent m_viewAgent;
 
-	public GameManager(WorkerThread workerThread, WorkScheduler scheduler, MessageTransceiver messageTransceiver) {
+	private static GameManager m_singleton;
+	public static GameManager getInstance(){
+		if (m_singleton == null){
+			m_singleton = new GameManager();			
+		}
+	
+		return m_singleton;
+	}
+	
+	private GameManager(){
+		
+	}
+	
+	public void Initialize(WorkerThread workerThread, WorkScheduler scheduler, MessageTransceiver messageTransceiver) {
 		m_workerThread = workerThread;
 		m_workScheduler = scheduler;
 		
@@ -73,9 +87,11 @@ public class GameManager {
 	public void hostGame() {
 		IDataAccess dataAccess = new CachedDataAccess(new DataAccessObserver(new NullDataAccess(), m_messageTransceiver));
 		m_entityManager = new EntityManager(dataAccess);
-
+		
+		m_entityManager.createEntity(GameStateEntityId.getInstance());
+		m_entityManager.applyChanges();
+		
 		m_modelAgent = new ModelAgent(m_messageTransceiver, createNewGame());
-
 		// if (command.isRemoteJoinAccepted()) {
 		// m_commsAgent = new CommsAgent(getMessageBus());
 		//
@@ -120,7 +136,7 @@ public class GameManager {
 
 		GameBoard gameBoard = new GameBoard(16, 16);
 		Robot robot1 = m_entityManager.createEntity(RobotId.generate());
-		robot1.setColor(GameColor.Blue);
+		robot1.setColor(GameColor.LightSeaGreen);
 		gameBoard.setItemOnTile(robot1, 2, 2);
 
 //		Robot robot2 = m_entityManager.createEntity(RobotId.generate());
@@ -138,7 +154,7 @@ public class GameManager {
 		gameBoard.setWalled(2, 0, EnumSet.of(Direction.Left));
 		gameBoard.setWalled(2, 12, EnumSet.of(Direction.Down));
 		gameBoard.setWalled(3, 15, EnumSet.of(Direction.Left));
-		
+		gameBoard.setWallAllAround();
 		m_entityManager.applyChanges();
 
 		return gameBoard; // getCurrentGame().setGameBoard(gameBoard);
@@ -148,5 +164,9 @@ public class GameManager {
 
 	public EntityManager getEntityManager() {
 		return m_entityManager;
+	}
+	
+	public MessageTransceiver getMessageTransceiver() {
+		return m_messageTransceiver;
 	}
 }

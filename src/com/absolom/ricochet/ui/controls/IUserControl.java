@@ -1,4 +1,4 @@
-package com.absolom.ricochet.ui;
+package com.absolom.ricochet.ui.controls;
 
 import android.graphics.Canvas;
 

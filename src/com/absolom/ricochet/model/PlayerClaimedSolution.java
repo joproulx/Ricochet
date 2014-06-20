@@ -1,6 +1,9 @@
 package com.absolom.ricochet.model;
 
-public class PlayerClaimedSolution {
+import java.io.Serializable;
+
+public class PlayerClaimedSolution implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private final PlayerId m_playerId;
 	private final int m_claimedMoveCount;
 

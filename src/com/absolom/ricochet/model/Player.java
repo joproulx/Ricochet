@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.absolom.ricochet.model.common.GameColor;
 import com.absolom.utility.data.IDocumentEntry;
 
-public class Player extends Entity {
+public class Player extends Entity<PlayerId> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,10 +14,10 @@ public class Player extends Entity {
 	}
 
 	@Override
-	protected EntityId toEntityId(UUID id) {
+	protected PlayerId toEntityId(UUID id) {
 		return new PlayerId(id);
 	}
-
+	
 	public GameColor getColor() {
 		return getData().getValue("color");
 	}
@@ -26,6 +26,10 @@ public class Player extends Entity {
 		getData().setValue("isLocal", isLocal);
 	}
 
+	public String getPlayerName() {
+		return getData().getValue("name");
+	}
+	
 	public void setPlayerName(String playerName) {
 		getData().setValue("name", playerName);
 	}

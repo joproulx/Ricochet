@@ -28,7 +28,7 @@ public class RobotPathsBuilder {
 		TilePath path = new TilePath(coord);
 		buildPath(path, entityManager, robot.getColor(), currentTile, direction);
 
-		robotPaths.setAvailableMove(direction, new RobotMove(robot.getRobotId(), path));
+		robotPaths.setAvailableMove(direction, new RobotMove(robot.getEntityId(), path));
 	}
 
 	private static void buildPath(TilePath path, EntityManager entityManager, GameColor robotColor, Tile currentTile, Direction direction) {

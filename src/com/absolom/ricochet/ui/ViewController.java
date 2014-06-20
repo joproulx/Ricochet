@@ -7,6 +7,7 @@ public abstract class ViewController implements IViewController {
 		m_view = view;
 	}
 
+	@Override
 	public IView getView() {
 		return m_view;
 	}

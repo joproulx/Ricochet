@@ -5,10 +5,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import android.graphics.PointF;
+
 import com.absolom.ricochet.model.RobotAvailableMoves;
 import com.absolom.ricochet.model.RobotMove;
 import com.absolom.ricochet.model.TileCoordinates;
 import com.absolom.ricochet.model.TilePath;
+import com.absolom.ricochet.ui.controls.GameBoardControl;
+import com.absolom.ricochet.ui.controls.RobotControl;
 import com.absolom.utility.common.Direction;
 import com.absolom.utility.common.PointCoordinates;
 

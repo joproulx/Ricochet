@@ -28,8 +28,11 @@ public class FindingSolutionState extends PausableState {
 		public @Override
 		IMessageResult onMessage(ClaimSolutionCommand command) {
 			getSolutionManager().addClaimedSolution(command.getPlayerId(), command.getMoveCount());
-			selectPlayerWithBestSolution();
-			gotoState(new ShowingSolutionState());
+			if (selectPlayerWithBestSolution()){
+				gotoState(new ShowingSolutionState());
+				return MessageResult.success();
+			}
+			// TODO: Return error
 			return MessageResult.success();
 		}
 	};

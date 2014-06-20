@@ -1,7 +1,8 @@
-package com.absolom.ricochet.ui;
+package com.absolom.ricochet.ui.controls;
 
 import java.util.EnumSet;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -19,20 +20,18 @@ public class GameBoardControl extends UserControl {
 	private Paint m_paint;
 	private int m_cellCountX;
 	private int m_cellCountY;
-
+	private Bitmap  m_backgroundBitmap; 
+    
 	private TileControl[][] m_tiles;
 
 	public GameBoardControl(int cellCountX, int cellCountY) {
 		m_cellCountX = cellCountX;
 		m_cellCountY = cellCountY;
 		m_tiles = new TileControl[cellCountX][cellCountY];
-		m_paint = new Paint();
-		m_paint.setARGB(255, 255, 255, 255);
-		m_paint.setStyle(Paint.Style.FILL);
+		m_paint = GameColor.White.toFillPaint();
+		m_paint.setAlpha(60);
+		m_backgroundPaint = GameColor.Black.toFillPaint();
 
-		m_backgroundPaint = new Paint();
-		m_backgroundPaint.setARGB(255, 0, 0, 255);
-		m_backgroundPaint.setStyle(Paint.Style.FILL);
 		createTiles();
 	}
 
@@ -51,14 +50,14 @@ public class GameBoardControl extends UserControl {
 	}
 
 	private void updateLayout() {
-		float cellWidth = ((1F / (float) m_cellCountX) * getBoundingBox().getWidth());
-		float cellHeight = ((1F / (float) m_cellCountY) * getBoundingBox().getHeight());
-
+		float cellWidth = ((1F / m_cellCountX) * getBoundingBox().getWidth());
+		float cellHeight = ((1F / m_cellCountY) * getBoundingBox().getHeight());
+		m_backgroundBitmap = null;
 		for (int x = 0; x < m_cellCountX; x++) {
 			for (int y = 0; y < m_cellCountX; y++) {
 
-				float topX = /* getBoundingBox().getLeft() + */cellWidth * (float) x;
-				float topY = /* getBoundingBox().getTop() + */cellHeight * (float) y;
+				float topX = /* getBoundingBox().getLeft() + */cellWidth * x;
+				float topY = /* getBoundingBox().getTop() + */cellHeight * y;
 
 				m_tiles[x][y].setBoundingBox(topX, topY, cellWidth, cellHeight);
 
@@ -74,45 +73,54 @@ public class GameBoardControl extends UserControl {
 		return m_cellCountX;
 	}
 
+	@Override
 	public void draw(Canvas canvas, long elapsedMilliseconds) {
-//		canvas.drawRect(0, 0, getBoundingBox().getWidth(), getBoundingBox().getHeight(), m_backgroundPaint);
-//
-//		for (int x = 0; x < m_cellCountX; x++) {
-//			for (int y = 0; y < m_cellCountX; y++) {
-//				m_tiles[x][y].draw(canvas, elapsedMilliseconds);
-//			}
-//		}
+		 canvas.drawRect(0, 0, getBoundingBox().getWidth(),
+		 getBoundingBox().getHeight(), m_backgroundPaint);
 
-		GameColor gameColor = GameColor.Black;
-		Paint paint = new Paint();
-		paint.setARGB(255, gameColor.getR(), gameColor.getG(), gameColor.getB());
-		paint.setStyle(Paint.Style.FILL);
+		// GameColor gameColor = GameColor.White;
+		// Paint paint = new Paint();
+		// paint.setARGB(255, gameColor.getR(), gameColor.getG(),
+		// gameColor.getB());
+		// paint.setStyle(Paint.Style.FILL);
+		//
+		if (m_backgroundBitmap == null) {
+			m_backgroundBitmap = Bitmap.createBitmap((int)this.getWidth(), (int)this.getHeight(), Bitmap.Config.ARGB_8888);
+			
+			Canvas internalCanvas = new Canvas(m_backgroundBitmap);
+			
+			internalCanvas.drawRect(getBoundingBox().getLeft(), getBoundingBox().getTop(), getBoundingBox().getRight(), getBoundingBox().getBottom(), m_paint);
 
-		canvas.drawRect(getBoundingBox().getLeft(), getBoundingBox().getTop(), getBoundingBox().getLeft(), getBoundingBox().getBottom(), m_paint);
+			float cellWidth = ((1F / m_cellCountX) * getBoundingBox().getWidth());
+			float cellHeight = ((1F / m_cellCountY) * getBoundingBox().getHeight());
+			for (int i = 1; i < m_cellCountX; i++) {
+				float topX = cellWidth * i;
+				float topY = 0;
 
-		float cellWidth = ((1F / (float) m_cellCountX) * getBoundingBox().getWidth());
-		float cellHeight = ((1F / (float) m_cellCountY) * getBoundingBox().getHeight());
-		for (int i = 1; i < m_cellCountX; i++) {
-			float topX = cellWidth * (float) i;
-			float topY = 0;
+				float bottomX = topX;
+				float bottomY = getBoundingBox().getBottom();
 
-			float bottomX = topX;
-			float bottomY = getBoundingBox().getBottom();
+				internalCanvas.drawLine(topX, topY, bottomX, bottomY, m_paint);
+			}
 
-			canvas.drawLine(topX, topY, bottomX, bottomY, m_paint);
+			for (int i = 1; i < m_cellCountY; i++) {
+				float leftX = 0;
+				float leftY = cellHeight * i;
+
+				float rightX = getBoundingBox().getRight();
+				float rightY = leftY;
+
+				internalCanvas.drawLine(leftX, leftY, rightX, rightY, m_paint);
+			}
+
+			for (int x = 0; x < m_cellCountX; x++) {
+				for (int y = 0; y < m_cellCountX; y++) {
+					m_tiles[x][y].draw(internalCanvas, elapsedMilliseconds);
+				}
+			}
 		}
-
-		for (int i = 1; i < m_cellCountY; i++) {
-			float leftX = 0;
-			float leftY = cellHeight * (float) i;
-
-			float rightX = getBoundingBox().getRight();
-			float rightY = leftY;
-
-			canvas.drawLine(leftX, leftY, rightX, rightY, m_paint);
-		}
-
 		
+		canvas.drawBitmap(m_backgroundBitmap, getBoundingBox().getLeft(), getBoundingBox().getTop(), null);
 	}
 
 	public void setWalls(TileCoordinates coordinates, EnumSet<Direction> walls) {
@@ -137,25 +145,27 @@ public class GameBoardControl extends UserControl {
 		}
 	}
 
+	@Override
 	public float getWidth() {
 		return getBoundingBox().getWidth();
 	}
 
+	@Override
 	public float getHeight() {
 		return getBoundingBox().getHeight();
 	}
 
 	public float getTileWidth() {
-		return getBoundingBox().getWidth() / (float) m_cellCountX;
+		return getBoundingBox().getWidth() / m_cellCountX;
 	}
 
 	public float getTileHeight() {
-		return getBoundingBox().getHeight() / (float) m_cellCountY;
+		return getBoundingBox().getHeight() / m_cellCountY;
 	}
 
 	public PointF getTilePosition(TileCoordinates tileCoordinates) {
-		float pointX = getBoundingBox().getLeft() + (float) tileCoordinates.getX() * getBoundingBox().getWidth() / (float) m_cellCountX;
-		float pointY = getBoundingBox().getTop() + (float) tileCoordinates.getY() * getBoundingBox().getHeight() / (float) m_cellCountY;
+		float pointX = getBoundingBox().getLeft() + (float) tileCoordinates.getX() * getBoundingBox().getWidth() / m_cellCountX;
+		float pointY = getBoundingBox().getTop() + (float) tileCoordinates.getY() * getBoundingBox().getHeight() / m_cellCountY;
 
 		return new PointF(pointX, pointY);
 	}

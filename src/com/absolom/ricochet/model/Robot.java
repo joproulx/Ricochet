@@ -6,7 +6,7 @@ import com.absolom.ricochet.model.common.GameColor;
 import com.absolom.utility.data.DocumentEntry;
 import com.absolom.utility.data.IDocumentEntry;
 
-public class Robot extends GameBoardItem {
+public class Robot extends GameBoardEntity<RobotId> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,12 +19,8 @@ public class Robot extends GameBoardItem {
 	}
 
 	@Override
-	public EntityId toEntityId(UUID id) {
+	public RobotId toEntityId(UUID id) {
 		return new RobotId(id);
-	}
-
-	public RobotId getRobotId() {
-		return (RobotId) getEntityId();
 	}
 
 	public GameColor getColor() {

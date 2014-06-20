@@ -13,7 +13,7 @@ public class Game {
 	public Game(WorkerThread workerThread, WorkScheduler workScheduler, EntityManager entityManager, MessageTransceiver messageTransceiver) {
 		m_context = new GameStateContext(workerThread, workScheduler, entityManager, messageTransceiver);
 		//m_context.gotoState(new WaitingForNewPlayerState());
-		m_context.gotoState(new FindingSolutionState());
+		m_context.gotoState(new WaitingForNewPlayerState());
 		// TODO: Replace with good state
 		
 		// m_players = new HashMap<PlayerId, Player>();

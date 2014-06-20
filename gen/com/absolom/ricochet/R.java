@@ -1193,9 +1193,11 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
-        public static final int activity_main=0x7f030018;
-        public static final int fragment_main=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int activity_game=0x7f030018;
+        public static final int activity_game_configuration=0x7f030019;
+        public static final int activity_main=0x7f03001a;
+        public static final int fragment_main=0x7f03001b;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
@@ -1244,6 +1246,8 @@ containing a value of this type.
         public static final int action_settings=0x7f05000f;
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f05000e;
+        public static final int title_activity_game=0x7f050010;
+        public static final int title_activity_game_configuration=0x7f050011;
     }
     public static final class style {
         /** 

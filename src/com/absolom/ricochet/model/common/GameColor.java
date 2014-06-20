@@ -2,6 +2,9 @@ package com.absolom.ricochet.model.common;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+import android.graphics.Paint;
+
 public class GameColor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -12,6 +15,9 @@ public class GameColor implements Serializable {
 	public static final GameColor White = new GameColor(255, 255, 255);
 	public static final GameColor Black = new GameColor(0, 0, 0);
 	public static final GameColor Grey = new GameColor(125, 125, 125);
+	public static final GameColor LightSlateGray = new GameColor(119, 136, 153);
+	public static final GameColor LightSteelBlue = new GameColor(176, 196, 222);
+	public static final GameColor LightSeaGreen = new GameColor(32,178,170);
 	public static final GameColor Red = new GameColor(255, 0, 0);
 	public static final GameColor Blue = new GameColor(0, 0, 255);
 
@@ -36,7 +42,22 @@ public class GameColor implements Serializable {
 	public int getB() {
 		return m_b;
 	}
+	
+	public Paint toFillPaint(){
+		Paint paint = new Paint();
+		paint.setARGB(255, getR(), getG(), getB());
+		paint.setStyle(Paint.Style.FILL);
+		return paint;
+	}
+	
+	public Paint toStrokePaint(){
+		Paint paint = new Paint();
+		paint.setARGB(255, getR(), getG(), getB());
+		paint.setStyle(Paint.Style.STROKE);
+		return paint;
+	}
 
+	@Override
 	public boolean equals(Object other) {
 		boolean result = false;
 		if (other instanceof GameColor) {
@@ -46,7 +67,8 @@ public class GameColor implements Serializable {
 		return result;
 	}
 
+	@Override
 	public int hashCode() {
-		return Integer.valueOf((((int) getR()) << 16) + (((int) getG()) << 8) + (int) getB()).hashCode();
+		return Objects.hashCode(getR(), getG(), getB());
 	}
 }

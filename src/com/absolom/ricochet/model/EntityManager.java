@@ -26,12 +26,14 @@ public class EntityManager {
 		m_documents.put(Player.class, new Document("Player", m_dataAccess));
 		m_documents.put(Ricochet.class, new Document("Ricochet", m_dataAccess));
 		m_documents.put(Target.class, new Document("Target", m_dataAccess));
+		m_documents.put(GameStateEntity.class, new Document("GameStateEntity", m_dataAccess));
 
 		m_idToTypeMapping = new HashMap<Class<?>, Class<?>>();
 		m_idToTypeMapping.put(RobotId.class, Robot.class);
 		m_idToTypeMapping.put(PlayerId.class, Player.class);
 		m_idToTypeMapping.put(RicochetId.class, Ricochet.class);
 		m_idToTypeMapping.put(TargetId.class, Target.class);
+		m_idToTypeMapping.put(GameStateEntityId.class, GameStateEntity.class);
 	}
 
 	public boolean applyChanges() {
@@ -47,9 +49,9 @@ public class EntityManager {
 		}
 		return success;
 	}
-
+		
 	@SuppressWarnings("unchecked")
-	public <T extends Entity> T createEntity(EntityId id) {
+	public <T extends Entity<U>, U extends EntityId> T createEntity(U id) {
 
 		if (!m_idToTypeMapping.containsKey(id.getClass())) {
 			throw new InvalidParameterException();
@@ -69,8 +71,7 @@ public class EntityManager {
 		return (T) createEntity(entityType, entry);
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T extends Entity> T createEntity(Class<?> entityType, IDocumentEntry data) {
+	private <T extends Entity<U>, U extends EntityId> T createEntity(Class<T> entityType, IDocumentEntry data) {
 		T entity = null;
 		try {
 			entity = (T) entityType.getConstructor(IDocumentEntry.class).newInstance(data);
@@ -85,10 +86,10 @@ public class EntityManager {
 			}
 		}
 
-		return (T) entity;
+		return entity;
 	}
 
-	public <T extends Entity> List<T> getAllEntitiesByType(Class<T> entityType) {
+	public <T extends Entity<U>, U extends EntityId> List<T> getAllEntitiesByType(Class<T> entityType) {
 		Document document = getDocument(entityType);
 
 		List<IDocumentEntry> entries = document.getAllEntries();
@@ -102,14 +103,14 @@ public class EntityManager {
 		return entities;
 	}
 	
-	public List<EntityId> getAllEntityIdByType(Class<?> entityType) {
+	public <T extends Entity<U>, U extends EntityId> List<U> getAllEntityIdByType(Class<T> entityType) {
 		Document document = getDocument(entityType);
 
 		List<IDocumentEntry> entries = document.getAllEntries();
-		ArrayList<EntityId> entities = new ArrayList<EntityId>();
+		ArrayList<U> entities = new ArrayList<U>();
 
 		for (IDocumentEntry entry : entries) {
-			Entity entity = createEntity(entityType, entry);
+			Entity<U> entity = createEntity(entityType, entry);
 			entities.add(entity.getEntityId());
 		}
 
@@ -117,7 +118,7 @@ public class EntityManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Entity> T getEntity(EntityId id) {
+	public <T extends Entity<U>, U extends EntityId> T getEntity(U id) {
 		Document document = getDocument(id);
 
 		if (document == null) {
@@ -125,12 +126,16 @@ public class EntityManager {
 		}
 
 		IDocumentEntry entry = document.getEntry(id.toString());
-		Class<?> entityType = m_idToTypeMapping.get(id.getClass());
+		Class<T> entityType = (Class<T>) m_idToTypeMapping.get(id.getClass());
 
 		return (T) createEntity(entityType, entry);
 	}
 
 	private Document getDocument(EntityId id) {
+		if (id == null){
+			return null;
+		}
+		
 		if (!m_idToTypeMapping.containsKey(id.getClass())) {
 			return null;
 		}
@@ -148,7 +153,7 @@ public class EntityManager {
 		return m_documents.get(entityType);
 	}
 
-	public boolean updateEntity(Entity entity) {
+	public <T extends EntityId> boolean updateEntity(Entity<T> entity) {
 		if (!m_documents.containsKey(entity)) {
 			return false;
 		}

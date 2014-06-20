@@ -40,24 +40,24 @@ public class GameBoard {
 		return m_tiles[coordinates.getX()][coordinates.getY()];
 	}
 
-	public void setItemOnTile(GameBoardItem item, TileCoordinates coordinates) {
+	public void setItemOnTile(GameBoardEntity<?> item, TileCoordinates coordinates) {
 		setItemOnTile(item, coordinates.getX(), coordinates.getY());
 	}
 
-	public void setItemOnTile(GameBoardItem item, int x, int y) {
+	public void setItemOnTile(GameBoardEntity<?> item, int x, int y) {
 		Tile tile = getTile(x, y);
 		tile.addEntityId(item.getEntityId());
 		item.setCoordinates(tile.getCoordinates());
 	}
 
-	public void removeItemFromCurrentTile(GameBoardItem item) {
+	public void removeItemFromCurrentTile(GameBoardEntity<?> item) {
 		Tile tile = getTile(item.getCoordinates());
 		if (tile != null) {
 			tile.removeItem(item.getEntityId());
 		}
 	}
 
-	public void moveItem(GameBoardItem item, TileCoordinates newCoordinates) {
+	public void moveItem(GameBoardEntity<?> item, TileCoordinates newCoordinates) {
 		removeItemFromCurrentTile(item);
 		setItemOnTile(item, newCoordinates);
 	}
@@ -96,5 +96,18 @@ public class GameBoard {
 
 	public Tile[][] getAllTiles() {
 		return m_tiles.clone();
+	}
+
+	public void setWallAllAround() {
+		for (int x = 0; x < m_tileCountX; x++) {
+			m_tiles[x][0].setWalled(Direction.Up);
+			m_tiles[x][m_tileCountY-1].setWalled(Direction.Down);
+		}
+		
+		for (int y = 0; y < m_tileCountY; y++) {
+			m_tiles[0][y].setWalled(Direction.Left);
+			m_tiles[m_tileCountX - 1][y].setWalled(Direction.Right);
+		}
+		
 	}
 }

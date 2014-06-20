@@ -1,8 +1,7 @@
-package com.absolom.ricochet.ui;
+package com.absolom.ricochet.ui.controls;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.absolom.ricochet.model.RobotAvailableMoves;
 import com.absolom.ricochet.model.RobotId;
@@ -33,14 +32,13 @@ public class RobotControl extends MovableEntityUserControl {
 	}
 
 	
+	@Override
 	public void draw(Canvas canvas, long elapsedMilliseconds) {
 		float width = getBoundingBox().getWidth();
 		float height = getBoundingBox().getHeight();
 
 		float radius = width < height ? width : height;
 		radius = radius / 2F;
-		Log.w("test", getBoundingBox().toString());
-		
 		canvas.drawCircle(getBoundingBox().getCenterX(), getBoundingBox().getCenterY(), radius, m_paint);
 	}
 

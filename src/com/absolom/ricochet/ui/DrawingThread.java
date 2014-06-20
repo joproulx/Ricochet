@@ -21,6 +21,7 @@ public class DrawingThread extends Thread {
 
 	}
 
+	@Override
 	public void start() {
 		m_elapsedTime = SystemClock.elapsedRealtime();
 		setRunning(true);
@@ -40,6 +41,7 @@ public class DrawingThread extends Thread {
 		}
 	}
 
+	@Override
 	public void run() {
 		while (m_running) {
 			Canvas c = null;
@@ -56,7 +58,6 @@ public class DrawingThread extends Thread {
 						m_elapsedTime = newElapsed;
 					}
 				}
-			
 			} 
 			catch(RuntimeException ex){
 				Log.e("DrawingThread", ex.toString());

@@ -65,6 +65,7 @@ public class ShowingSolutionState extends PausableState {
 		m_showSolutionTimer = m_context.startTimer(getConfig().getShowSolutionTimeout(), onShowSolutionTimeout, this);
 	}
 
+	@Override
 	public long getShowSolutionRemainingTime() {
 		if (m_showSolutionTimer != null) {
 			return m_showSolutionTimer.getDelay(TimeUnit.MILLISECONDS);
@@ -147,23 +148,25 @@ public class ShowingSolutionState extends PausableState {
 	}
 
 	private Runnable onMoveRobotTimeout = new Runnable() {
+		@Override
 		public void run() {
 			if (!isCurrentState()) {
 				return;
 			}
 
-			getSolutionManager().setFailedSolution(m_context.getCurrentPlayerId(), MoveErrorType.MoveTimeout);
+			getSolutionManager().setFailedSolution(getCurrentPlayerId(), MoveErrorType.MoveTimeout);
 			handleInvalidSolution();
 		}
 	};
 
 	private Runnable onShowSolutionTimeout = new Runnable() {
+		@Override
 		public void run() {
 			if (!isCurrentState()) {
 				return;
 			}
 
-			getSolutionManager().setFailedSolution(m_context.getCurrentPlayerId(), MoveErrorType.SolutionTimeout);
+			getSolutionManager().setFailedSolution(getCurrentPlayerId(), MoveErrorType.SolutionTimeout);
 
 			handleInvalidSolution();
 		}
@@ -182,7 +185,7 @@ public class ShowingSolutionState extends PausableState {
 		// ---------------------
 		// Validation
 		// ---------------------
-		if (!m_context.getCurrentPlayerId().equals(playerId)) {
+		if (!getCurrentPlayerId().equals(playerId)) {
 			return new MoveResult(playerId, MoveErrorType.InvalidPlayer, move);
 		}
 
@@ -214,7 +217,7 @@ public class ShowingSolutionState extends PausableState {
 	}
 
 	private int getCurrentClaimedMoveCount() {
-		return getSolutionManager().getPlayerSolution(m_context.getCurrentPlayerId()).getClaimedMoveCount();
+		return getSolutionManager().getPlayerSolution(getCurrentPlayerId()).getClaimedMoveCount();
 	}
 
 	private MoveResult moveRobotInternal(PlayerId playerId, Robot robot, RobotMove robotMove) {

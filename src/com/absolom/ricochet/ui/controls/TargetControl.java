@@ -1,4 +1,4 @@
-package com.absolom.ricochet.ui;
+package com.absolom.ricochet.ui.controls;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -21,6 +21,7 @@ public class TargetControl extends EntityUserControl {
 		return m_targetId;
 	}
 
+	@Override
 	public void draw(Canvas canvas, long elapsedMilliseconds) {
 		canvas.drawRect(getBoundingBox().getLeft(), getBoundingBox().getTop(), getBoundingBox().getRight(), getBoundingBox().getBottom(), m_paint);
 	}

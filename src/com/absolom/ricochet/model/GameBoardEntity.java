@@ -2,11 +2,11 @@ package com.absolom.ricochet.model;
 
 import com.absolom.utility.data.IDocumentEntry;
 
-public abstract class GameBoardItem extends Entity {
+public abstract class GameBoardEntity<T extends EntityId> extends Entity<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	public GameBoardItem(IDocumentEntry data) {
+	public GameBoardEntity(IDocumentEntry data) {
 		super(data);
 	}
 

@@ -6,8 +6,10 @@ import com.absolom.ricochet.config.IConfiguration;
 import com.absolom.ricochet.model.EntityManager;
 import com.absolom.ricochet.model.GameBoard;
 import com.absolom.ricochet.model.GameStateContext;
-import com.absolom.ricochet.model.Player;
+import com.absolom.ricochet.model.GameStateEntity;
+import com.absolom.ricochet.model.GameStateEntityId;
 import com.absolom.ricochet.model.PlayerClaimedSolution;
+import com.absolom.ricochet.model.PlayerId;
 import com.absolom.ricochet.model.PlayerSolutionManager;
 import com.absolom.ricochet.model.Robot;
 import com.absolom.ricochet.model.TargetId;
@@ -28,12 +30,7 @@ public class State extends MessageEndPoint {
 	public boolean isCurrentState() {
 		return m_context.getCurrentState() == this;
 	}
-
-	public boolean addPlayer(Player player) {
-		// TODO
-		return false;
-	}
-
+	
 	public boolean commitUpdates() {
 		return getEntityManager().applyChanges();
 	}
@@ -42,6 +39,10 @@ public class State extends MessageEndPoint {
 		return m_context.getEntityManager();
 	}
 
+	public GameStateEntity getGameState() {
+		return m_context.getEntityManager().getEntity(GameStateEntityId.getInstance());
+	}
+	
 	public IConfiguration getConfig() {
 		return m_context.getConfig();
 	}
@@ -109,16 +110,25 @@ public class State extends MessageEndPoint {
 
 		gotoState(new GameCompletedState());
 	}
+	
+	protected PlayerId getCurrentPlayerId(){
+		return getGameState().getCurrentSolution().getPlayerId();
+		
+	}
 
 	protected boolean selectPlayerWithBestSolution() {
 		PlayerClaimedSolution solution = getSolutionManager().getBestClaimedUnvalidatedSolution();
 
-		if (solution == null || solution.getPlayerId() == m_context.getCurrentPlayerId()) {
-			m_context.setCurrentPlayerId(null);
+		GameStateEntity stateEntity = getGameState();
+		
+		if (solution == null || ( stateEntity.getCurrentSolution() != null && solution.getPlayerId() == stateEntity.getCurrentSolution().getPlayerId())) {
+			stateEntity.setCurrentSolution(null);
 			return false;
 		}
-
-		m_context.setCurrentPlayerId(solution.getPlayerId());
+		
+		stateEntity.setCurrentSolution(solution);
+		getEntityManager().applyChanges();
+		
 		return true;
 	}
 
